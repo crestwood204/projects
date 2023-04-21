@@ -6,6 +6,7 @@ const EulerProject = () => {
   return (
     <Container>
       <div>Problem 1: {problem1()}</div>
+      <div>Problem 2: {problem2()}</div>
     </Container>
   );
 };
