@@ -1,6 +1,7 @@
 import problem1 from "@/components/EulerProject/problem1";
 import problem2 from "@/components/EulerProject/problem2";
 import problem3 from "@/components/EulerProject/problem3";
+import problem4 from "@/components/EulerProject/problem4";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -8,6 +9,7 @@ const problems: Record<number, any> = {
   1: problem1,
   2: problem2,
   3: problem3,
+  4: problem4,
 };
 
 const EulerProject = () => {
@@ -36,10 +38,15 @@ const EulerProject = () => {
         <button onClick={() => setProblemNumber(1)}>Problem 1</button>
         <button onClick={() => setProblemNumber(2)}>Problem 2</button>
         <button onClick={() => setProblemNumber(3)}>Problem 3</button>
+        <button onClick={() => setProblemNumber(4)}>Problem 4</button>
       </ButtonContainer>
-      <div>
-        Problem #{problemNumber} answer: {problemAnswers[problemNumber]}
-      </div>
+      {problemNumber > 0 ? (
+        <div>
+          Problem #{problemNumber} answer: {problemAnswers[problemNumber]}
+        </div>
+      ) : (
+        <div>Click on a problem to compute the answer</div>
+      )}
     </Container>
   );
 };
@@ -53,6 +60,7 @@ const Container = styled.div`
   align-items: center;
   width: 100vw;
   height: 100vh;
+  row-gap: 48px;
 `;
 
 const ButtonContainer = styled.div`
