@@ -1,12 +1,45 @@
 import problem1 from "@/components/EulerProject/problem1";
 import problem2 from "@/components/EulerProject/problem2";
+import problem3 from "@/components/EulerProject/problem3";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
+const problems: Record<number, any> = {
+  1: problem1,
+  2: problem2,
+  3: problem3,
+};
+
 const EulerProject = () => {
+  const [problemNumber, setProblemNumber] = useState<number>(0);
+  const [problemAnswers, setProblemsAnswer] = useState<Record<number, any>>({});
+
+  useEffect(() => {
+    if (problemNumber <= 0) {
+      return;
+    }
+
+    if (!problemAnswers.hasOwnProperty(problemNumber)) {
+      setProblemsAnswer((answers) => ({
+        ...answers,
+        [problemNumber]: problems[problemNumber](),
+      }));
+    } else {
+      return problemAnswers[problemNumber];
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [problemNumber]);
+
   return (
     <Container>
-      <div>Problem 1: {problem1()}</div>
-      <div>Problem 2: {problem2()}</div>
+      <ButtonContainer>
+        <button onClick={() => setProblemNumber(1)}>Problem 1</button>
+        <button onClick={() => setProblemNumber(2)}>Problem 2</button>
+        <button onClick={() => setProblemNumber(3)}>Problem 3</button>
+      </ButtonContainer>
+      <div>
+        Problem #{problemNumber} answer: {problemAnswers[problemNumber]}
+      </div>
     </Container>
   );
 };
@@ -18,4 +51,12 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100vw;
+  height: 100vh;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 16px;
 `;
