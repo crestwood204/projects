@@ -8,14 +8,19 @@ type Props = {
 };
 
 const Problem = ({ problemNumber, runProblem, autoRun }: Props) => {
-  const [runtime, setRuntime] = useState(0);
   const [answer, setAnswer] = useState<ReactNode>();
+  const [startTime, setStartTime] = useState<number>();
+  const [endTime, setEndTime] = useState<number>();
+
+  useEffect(() => {
+    if (answer) {
+      setEndTime(Date.now());
+    }
+  }, [answer]);
 
   const handleButtonClick = useCallback(() => {
-    const startTime = Date.now();
+    setStartTime(Date.now());
     const ans = runProblem();
-    const endTime = Date.now();
-    setRuntime((endTime - startTime) / 1000);
     setAnswer(ans);
   }, [runProblem]);
 
@@ -30,7 +35,7 @@ const Problem = ({ problemNumber, runProblem, autoRun }: Props) => {
       <div>Problem #{problemNumber}:</div>
       <button onClick={handleButtonClick}>Run</button>
       <div>Ans: {answer}</div>
-      <div>Runtime: {runtime}ms</div>
+      <div>Runtime: {endTime && startTime ? endTime - startTime : 0}ms</div>
     </Container>
   );
 };
