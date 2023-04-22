@@ -14,7 +14,7 @@ const problem3 = () => {
     if (maxNumber % currPrime === 0) {
       primeFactors.push(currPrime);
       maxNumber = maxNumber / currPrime;
-      console.log("Found prime factor:", currPrime, "Leftover:", maxNumber);
+      // console.log("Found prime factor:", currPrime, "Leftover:", maxNumber);
       index = 2;
     } else {
       index++;

@@ -3,16 +3,16 @@ const problem4 = () => {
   const largestProduct = 999 * 999;
   const smallestProduct = 100 * 100;
 
-  console.log(
-    "Calculating numbers from",
-    largestProduct,
-    "to",
-    smallestProduct
-  );
+  // console.log(
+  //   "Calculating numbers from",
+  //   largestProduct,
+  //   "to",
+  //   smallestProduct
+  // );
 
   for (let i = largestProduct; i >= smallestProduct; i--) {
     if (i % 1000 === 0) {
-      console.log(`Current number: ${i}`);
+      // console.log(`Current number: ${i}`);
     }
 
     if (isPalindrome(i) && isProductOf3DigitNumbers(i)) {
@@ -40,7 +40,7 @@ const isProductOf3DigitNumbers = (n: number): boolean => {
   // check all 3 digit numbers
 
   for (let i = highNumber; i >= lowNumber; i--) {
-    // divisible by at least one 3-digit number
+    // divisible by two 3-digit number
     if (n % i === 0 && isThreeDigitNumber(n / i)) {
       return true;
     }
