@@ -32,18 +32,17 @@ const problem3 = () => {
 
 export default problem3;
 
-// returns the next prime number larger than the prevPrimeNumber (or 2) if none is given
-const getNextPrimeNumber = () => {
+// returns the next prime number larger than the nthPrimeNumber (or 2) if none is given
+export const getNextPrimeNumber = () => {
   const calculatedPrimeNumbers: number[] = [];
 
-  return (prevPrimeNumber = 1) => {
+  return (nthPrimeNumber = 1) => {
     // memoize
-    const indexOf = calculatedPrimeNumbers.indexOf(prevPrimeNumber);
-    if (indexOf !== -1 && indexOf !== calculatedPrimeNumbers.length - 1) {
-      return calculatedPrimeNumbers[indexOf + 1];
+    if (nthPrimeNumber - 2 < calculatedPrimeNumbers.length) {
+      return calculatedPrimeNumbers[nthPrimeNumber - 2];
     }
 
-    let currNumber = prevPrimeNumber;
+    let currNumber = nthPrimeNumber;
 
     while (true) {
       let notPrime = false;
