@@ -5,6 +5,7 @@ import problem3 from "@/components/EulerProject/problems/problem3";
 import problem4 from "@/components/EulerProject/problems/problem4";
 import problem5 from "@/components/EulerProject/problems/problem5";
 import problem6 from "@/components/EulerProject/problems/problem6";
+import problem7 from "@/components/EulerProject/problems/problem7";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -20,6 +21,7 @@ const EulerProject = () => {
         <Problem problemNumber={4} runProblem={problem4} autoRun={runAll} />
         <Problem problemNumber={5} runProblem={problem5} autoRun={runAll} />
         <Problem problemNumber={6} runProblem={problem6} autoRun={runAll} />
+        <Problem problemNumber={7} runProblem={problem7} autoRun={runAll} />
       </ProblemContainer>
       <button onClick={() => setRunAll(true)}>Run all</button>
     </PageContainer>
