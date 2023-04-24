@@ -13,6 +13,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
   answer: string;
+  runTime: number;
 };
 
 export default function euler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -21,9 +22,11 @@ export default function euler(req: NextApiRequest, res: NextApiResponse<Data>) {
     problemNumber = problemNumber.join("");
   }
 
+  const startTime = Date.now();
   const answer = EulerProblems[parseInt(problemNumber) || 0]();
+  const endTime = Date.now();
 
-  res.status(200).json({ answer });
+  res.status(200).json({ answer, runTime: endTime - startTime });
 }
 
 const EulerProblems: Record<number, () => string> = {
