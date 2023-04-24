@@ -1,13 +1,13 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import runProblem from "./runProblem";
 
 type Props = {
   problemNumber: number;
-  runProblem: () => ReactNode;
   autoRun: boolean;
 };
 
-const Problem = ({ problemNumber, runProblem, autoRun }: Props) => {
+const Problem = ({ problemNumber, autoRun }: Props) => {
   const [answer, setAnswer] = useState<ReactNode>();
   const [startTime, setStartTime] = useState<number>();
   const [endTime, setEndTime] = useState<number>();
@@ -18,11 +18,11 @@ const Problem = ({ problemNumber, runProblem, autoRun }: Props) => {
     }
   }, [answer]);
 
-  const handleButtonClick = useCallback(() => {
+  const handleButtonClick = useCallback(async () => {
     setStartTime(Date.now());
-    const ans = runProblem();
+    const ans = await runProblem(problemNumber);
     setAnswer(ans);
-  }, [runProblem]);
+  }, [problemNumber]);
 
   useEffect(() => {
     if (autoRun) {
