@@ -10,14 +10,15 @@ export default async function euler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  let problemNumber = req.query.problemNumber || "";
+  let problemNumber = req.query.problemNumber || "0";
   if (Array.isArray(problemNumber)) {
     problemNumber = problemNumber.join("");
   }
 
   try {
+    const folderName = getFolderName(problemNumber);
     const { default: problem } = await import(
-      `@/serverFns/projectEuler/problems/problem${problemNumber}`
+      `@/serverFns/projectEuler/problems/${folderName}`
     );
 
     const startTime = Date.now();
@@ -31,3 +32,19 @@ export default async function euler(
       .json({ answer: "Solution not yet implemented", runTime: 0 });
   }
 }
+
+const getFolderName = (s: string): string => {
+  const n = parseInt(s);
+
+  const roundUpToNearestTenthPlace = Math.ceil(n / 10) * 10;
+  const roundUpToNearestHundrethPlace = Math.ceil(n / 100) * 100;
+
+  const hundredFolderName = `problems${
+    roundUpToNearestHundrethPlace - 99
+  }-${roundUpToNearestHundrethPlace}`;
+  const tensFolderName = `problems${
+    roundUpToNearestTenthPlace - 9
+  }-${roundUpToNearestTenthPlace}`;
+
+  return `${hundredFolderName}/${tensFolderName}/problem${s}`;
+};
