@@ -2,8 +2,13 @@ import Problem from "@/components/EulerProject/Problem";
 import { useState } from "react";
 import styled from "styled-components";
 import Navbar from "@/components/Navbar";
+import getValidProblems from "@/components/EulerProject/getValidProblems";
 
-const EulerProject = () => {
+type Props = {
+  validProblems: number[];
+};
+
+const EulerProject = ({ validProblems }: Props) => {
   const [runAll, setRunAll] = useState(false);
 
   return (
@@ -12,10 +17,10 @@ const EulerProject = () => {
       <PageContainer>
         <Header>Project Euler:</Header>
         <ProblemContainer>
-          {[...Array(10).keys(), 141].map((i) => (
+          {validProblems.map((i) => (
             <Problem
               key={`problem-number-${i}`}
-              problemNumber={i + 1}
+              problemNumber={i}
               autoRun={runAll}
             />
           ))}
@@ -27,6 +32,14 @@ const EulerProject = () => {
 };
 
 export default EulerProject;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      validProblems: await getValidProblems(),
+    }, // will be passed to the page component as props
+  };
+}
 
 const Header = styled.div`
   font-size: 48px;
