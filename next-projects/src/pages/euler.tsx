@@ -17,7 +17,7 @@ const EulerProject = ({ validProblemsGroups }: Props) => {
     <>
       <Navbar />
       <PageContainer>
-        <Header>Project Euler:</Header>
+        <Header>Project Euler</Header>
         {problemGroup !== undefined ? (
           <DisplayProblems
             problemNumbers={validProblemsGroups[problemGroup][1]}
