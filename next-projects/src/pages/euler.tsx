@@ -12,7 +12,7 @@ const EulerProject = () => {
       <PageContainer>
         <Header>Project Euler:</Header>
         <ProblemContainer>
-          {[...Array(10).keys()].map((i) => (
+          {[...Array(10).keys(), 141].map((i) => (
             <Problem
               key={`problem-number-${i}`}
               problemNumber={i + 1}
