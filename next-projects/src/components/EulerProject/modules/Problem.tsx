@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import runProblem from "./runProblem";
+import runProblem from "../utils/runProblem";
 
 type Props = {
   problemNumber: number;

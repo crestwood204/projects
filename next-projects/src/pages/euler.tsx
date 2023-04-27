@@ -1,31 +1,39 @@
-import Problem from "@/components/EulerProject/Problem";
+import Problem from "@/components/EulerProject/modules/Problem";
 import { useState } from "react";
 import styled from "styled-components";
 import Navbar from "@/components/Navbar";
-import getValidProblems from "@/components/EulerProject/getValidProblems";
+import getValidProblems from "@/components/EulerProject/utils/getValidProblems";
+import CardGroup from "@/components/EulerProject/modules/CardGroup";
+import DisplayProblems from "@/components/EulerProject/modules/DisplayProblems";
 
 type Props = {
-  validProblems: number[];
+  validProblemsGroups: [key: number, problemNumbers: number[]][];
 };
 
-const EulerProject = ({ validProblems }: Props) => {
-  const [runAll, setRunAll] = useState(false);
+const EulerProject = ({ validProblemsGroups }: Props) => {
+  const [problemGroup, setProblemGroup] = useState<number>();
 
   return (
     <>
       <Navbar />
       <PageContainer>
         <Header>Project Euler:</Header>
-        <ProblemContainer>
-          {validProblems.map((i) => (
-            <Problem
-              key={`problem-number-${i}`}
-              problemNumber={i}
-              autoRun={runAll}
-            />
-          ))}
-        </ProblemContainer>
-        <button onClick={() => setRunAll(true)}>Run all</button>
+        {problemGroup !== undefined ? (
+          <DisplayProblems
+            problemNumbers={validProblemsGroups[problemGroup][1]}
+            resetProblemGroup={() => setProblemGroup(undefined)}
+          />
+        ) : (
+          <ProblemContainer>
+            {validProblemsGroups.map(([tensPlace], index) => (
+              <CardGroup
+                key={`card-group-${index}`}
+                tensPlace={tensPlace}
+                onClick={() => setProblemGroup(index)}
+              />
+            ))}
+          </ProblemContainer>
+        )}
       </PageContainer>
     </>
   );
@@ -36,7 +44,7 @@ export default EulerProject;
 export async function getServerSideProps() {
   return {
     props: {
-      validProblems: await getValidProblems(),
+      validProblemsGroups: await getValidProblems(),
     }, // will be passed to the page component as props
   };
 }
