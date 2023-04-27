@@ -1,3 +1,5 @@
+import CardButton from "./CardButton";
+
 type Props = {
   tensPlace: number;
   onClick: () => void;
@@ -5,9 +7,9 @@ type Props = {
 
 const CardGroup = ({ tensPlace, onClick }: Props) => {
   return (
-    <button onClick={onClick}>
+    <CardButton onClick={onClick}>
       Problems {tensPlace - 9}-{tensPlace}
-    </button>
+    </CardButton>
   );
 };
 

@@ -51,20 +51,24 @@ export async function getServerSideProps() {
 
 const Header = styled.div`
   font-size: 48px;
+  text-align: center;
+  margin-top: 24px;
 `;
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 48px);
   row-gap: 48px;
+  padding-left: 15%;
+  padding-right: 15%;
 `;
 
 const ProblemContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  row-gap: 24px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 24px;
+  justify-content: center;
 `;
