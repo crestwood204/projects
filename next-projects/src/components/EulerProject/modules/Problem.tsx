@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import runProblem from "../utils/runProblem";
+import CardButton from "./CardButton";
 
 type Props = {
   problemNumber: number;
@@ -32,21 +33,58 @@ const Problem = ({ problemNumber, autoRun }: Props) => {
   }, [autoRun, handleButtonClick]);
 
   return (
-    <Container>
-      <div>Problem #{problemNumber}:</div>
-      <button onClick={handleButtonClick}>Run</button>
-      <div>Ans: {answer}</div>
-      <div>Total Runtime: {totalRunTime || 0}ms</div>
-      <div>Server Runtime: {serverRunTime || 0}ms</div>
-    </Container>
+    <CardButton onClick={handleButtonClick}>
+      <Container>
+        <Header>Problem #{problemNumber}</Header>
+        <RunningContainer>
+          {answer ? (
+            <Answer>
+              <div>
+                <div>Answer:</div>
+                <div style={{ marginTop: "8px" }}>{answer}</div>
+              </div>
+              <div>Server Runtime: {serverRunTime || 0}ms</div>
+            </Answer>
+          ) : totalRunTime ? (
+            <div>Running: {totalRunTime || 0}ms</div>
+          ) : (
+            "Click to run"
+          )}
+        </RunningContainer>
+      </Container>
+    </CardButton>
   );
 };
 
 export default Problem;
 
 const Container = styled.div`
+  height: 100%;
   display: flex;
-  justify-content: start;
+  flex-direction: column;
   align-items: center;
-  column-gap: 24px;
+  justify-content: start;
+`;
+
+const Header = styled.div`
+  font-weight: 500;
+  margin-top: 24px;
+  font-size: 24px;
+`;
+
+const RunningContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+
+  margin-top: 16px;
+  margin-bottom: 16px;
+`;
+
+const Answer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;

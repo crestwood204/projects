@@ -61,8 +61,8 @@ const PageContainer = styled.div`
   width: 100vw;
   height: calc(100vh - 48px);
   row-gap: 48px;
-  padding-left: 15%;
-  padding-right: 15%;
+  padding-left: 10%;
+  padding-right: 10%;
 `;
 
 const ProblemContainer = styled.div`

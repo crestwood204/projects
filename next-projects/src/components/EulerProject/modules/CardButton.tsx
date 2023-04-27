@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const CardButton = styled.button`
-  width: 200px;
-  height: 150px;
+  width: 210px;
+  height: 185px;
   border-radius: 24px;
   background: #313336;
   border: solid 2px #444547;
