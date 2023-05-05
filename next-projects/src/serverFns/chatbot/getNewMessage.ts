@@ -32,6 +32,7 @@ export const getNewMessage = async (input: string) => {
 
   const model = new OpenAI({
     openAIApiKey: apiKey,
+    modelName: "gpt-3.5-turbo",
     temperature: 0.5,
     frequencyPenalty: 5,
     presencePenalty: 0.1,
