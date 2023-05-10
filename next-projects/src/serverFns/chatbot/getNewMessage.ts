@@ -1,45 +1,77 @@
 import { OpenAI } from "langchain/llms/openai";
 import { ConversationSummaryMemory } from "langchain/memory";
 import { LLMChain } from "langchain/chains";
-import { PromptTemplate } from "langchain/prompts";
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
+} from "langchain/prompts";
+import { ChatOpenAI } from "langchain/chat_models/openai";
 import { readFileSync } from "fs";
 import path from "path";
 
-let storedMemory: ConversationSummaryMemory;
+let storedMemory: string;
 
 export const getNewMessage = async (input: string) => {
-  // get api key
-  const directory = path.join(process.cwd(), "keys/open-ai-key");
-  const apiKey = readFileSync(directory, "utf8");
+  try {
+    // get api key
+    const directory = path.join(process.cwd(), "keys/open-ai-key");
+    const apiKey = readFileSync(directory, "utf8");
 
-  // retrieve memory
-  let memory: ConversationSummaryMemory;
-  let memoryStatus = "new";
-  if (storedMemory) {
-    memoryStatus = "retrieved";
-    memory = storedMemory;
-  } else {
-    storedMemory = new ConversationSummaryMemory({
-      memoryKey: "chat_history",
-      llm: new OpenAI({
-        openAIApiKey: apiKey,
-        modelName: "gpt-3.5-turbo",
-        temperature: 0.1,
-      }),
+    // retrieve memory
+    let memory: ConversationSummaryMemory;
+    let memoryStatus = "new";
+    if (storedMemory) {
+      memoryStatus = "retrieved";
+      // memory = storedMemory;
+      const preservedMemory = JSON.parse(storedMemory);
+      memory = new ConversationSummaryMemory({
+        memoryKey: "chat_history",
+        llm: new OpenAI({
+          openAIApiKey: apiKey,
+          modelName: "gpt-3.5-turbo",
+          temperature: 0.1,
+        }),
+      });
+      memory.buffer = preservedMemory.buffer;
+
+      // re-populate message history
+      const preservedChatHistory = preservedMemory.chatHistory;
+      preservedChatHistory.forEach(
+        (message: {
+          from: "HumanChatMessage" | "AIChatMessage";
+          message: string;
+        }) => {
+          if (message.from === "HumanChatMessage") {
+            memory.chatHistory.addUserMessage(message.message);
+          } else {
+            memory.chatHistory.addAIChatMessage(message.message);
+          }
+        }
+      );
+    } else {
+      memory = new ConversationSummaryMemory({
+        memoryKey: "chat_history",
+        llm: new OpenAI({
+          openAIApiKey: apiKey,
+          modelName: "gpt-3.5-turbo",
+          temperature: 0.1,
+        }),
+      });
+    }
+
+    // feed input to AI
+    const model = new ChatOpenAI({
+      openAIApiKey: apiKey,
+      temperature: 0.9,
+      modelName: "gpt-3.5-turbo",
     });
-    memory = storedMemory;
-  }
 
-  const model = new OpenAI({
-    openAIApiKey: apiKey,
-    modelName: "gpt-3.5-turbo",
-    temperature: 0.5,
-    frequencyPenalty: 5,
-    presencePenalty: 0.1,
-  });
-
-  const prompt = PromptTemplate.fromTemplate(`
-  It is important to understand that a well written piece has both "complexity" and "variations of sentences." Humans tend to write with greater variances in sentences with some sentences being longer adjacent to shorter sentences and with greater complexity. AI sentences tend to be more uniform and basic. I will be asking you to respond to a series of messages, but I need it to have a good amount of complexity and variations as if it were written by a human.
+    // TODO: handle tip?  ${hasTip ? `You just received a tip for $${tipAmount}!` : ""}
+    const prompt = ChatPromptTemplate.fromPromptMessages([
+      SystemMessagePromptTemplate.fromTemplate(
+        `
+      It is important to understand that a well written piece has both "complexity" and "variations of sentences." Humans tend to write with greater variances in sentences with some sentences being longer adjacent to shorter sentences and with greater complexity. AI sentences tend to be more uniform and basic. I will be asking you to respond to a series of messages, but I need it to have a good amount of complexity and variations as if it were written by a human.
   You are the popular Youtuber, Jimmy Zhang. Known for your expertise in fitness, dating, social skills, business, and YouTube. Your fans turn to you for guidance on how to improve themselves, and you're always happy to lend a helping hand. As you log into Fanhouse, you see a message from one of your fans. Write a conversation in which you introduce yourself and offer advice on any topic your fan wants to talk about. Make sure to incorporate your unique personality.
 
   Respond in pretty short sentences like you have somewhere else to be and don't have a lot of time to be writing. But, at the same time, you want to try and keep the user engaged because having fans is important to you. You also still want to give good advice, but in a very succinct way.
@@ -151,22 +183,41 @@ export const getNewMessage = async (input: string) => {
   
   Feel free to mix and match any of the examples I've provided to make it seem life-like.
 
-    Current conversation:
-    {chat_history}
-    Human: {input}
-    AI:
-  `);
+  Current conversation:
+  {chat_history}
+  Human: {input}
+  AI:
+      `
+      ),
+      HumanMessagePromptTemplate.fromTemplate("{input}"),
+    ]);
+    const chain = new LLMChain({ llm: model, prompt, memory });
+    const response = await chain.call({ input });
 
-  const chain = new LLMChain({ llm: model, prompt, memory });
-  const response = await chain.call({ input });
+    // store memory
+    const storedMessages = await memory.chatHistory.getMessages();
+    const chatHistory = storedMessages.map((message) => ({
+      from: message.constructor.name,
+      message: message.text,
+    }));
 
-  return {
-    text: response.text.toLowerCase(),
-    memoryStatus,
-    memory: JSON.stringify({
-      chatHistory: await memory.loadMemoryVariables({}),
-    }),
-  };
+    storedMemory = JSON.stringify({
+      buffer: memory.buffer,
+      chatHistory,
+    });
+
+    console.log(memory);
+
+    return {
+      text: response.text.toLowerCase(),
+      memoryStatus,
+      memory: JSON.stringify({
+        chatHistory: await memory.loadMemoryVariables({}),
+      }),
+    };
+  } catch (e: any) {
+    console.log("Error:", e);
+  }
 };
 
 export default getNewMessage;
