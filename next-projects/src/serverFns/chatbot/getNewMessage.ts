@@ -9,6 +9,7 @@ import {
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { readFileSync } from "fs";
 import path from "path";
+import { HumanChatMessage } from "langchain/schema";
 
 let storedMemory: string;
 
@@ -96,8 +97,22 @@ export const getNewMessage = async (input: string) => {
       chatHistory,
     });
 
+    const textBot = new ChatOpenAI({
+      openAIApiKey: apiKey,
+      temperature: 0,
+      modelName: "gpt-3.5-turbo",
+    });
+
+    const formattedResponse = await textBot.call([
+      new HumanChatMessage(
+        `Add line breaks to the following message so that it sounds like its coming from one person who is texting another. Remove "." characters at the end of sentences to make it seem more natural.
+        
+        ${response.text}`
+      ),
+    ]);
+
     return {
-      text: response.text.toLowerCase(),
+      text: formattedResponse.text.toLowerCase(),
       memoryStatus,
       memory: JSON.stringify({
         chatHistory: await memory.loadMemoryVariables({}),

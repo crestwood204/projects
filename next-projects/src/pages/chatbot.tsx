@@ -62,6 +62,7 @@ const Chatbot = () => {
               style={{
                 textAlign: "left",
                 color: `${message.writer === "You" ? "white" : "#0fab3b"}`,
+                whiteSpace: "pre",
               }}
             >
               {message.content}
