@@ -14,10 +14,15 @@ const multiplyTwoLargeNumbers = (n1: string, n2: string): string => {
     largerNumber = n1;
   }
 
-  let total = largerNumber;
+  let total = "0";
 
-  for (let i = 1; i < parseInt(smallerNumber); i++) {
-    total = addTwoLargeNumbers(total, largerNumber);
+  for (let i = 1; i <= parseInt(smallerNumber); i++) {
+    if (i !== 1 && (i - 1) * 2 <= parseInt(smallerNumber)) {
+      total = addTwoLargeNumbers(total, total);
+      i = (i - 1) * 2;
+    } else {
+      total = addTwoLargeNumbers(total, largerNumber);
+    }
   }
 
   return total;
