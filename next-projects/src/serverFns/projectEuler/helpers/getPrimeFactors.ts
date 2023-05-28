@@ -1,13 +1,14 @@
 import primeNumberGenerator from "./primeNumberGenerator";
 
-const getPrimeFactors = (n: number) => {
-  const getNthPrime = primeNumberGenerator();
+const getPrimeFactors = (n: number, getNthPrime?: () => number) => {
+  let getNthPrimeFunc = getNthPrime || primeNumberGenerator();
+
   const primeFactors: number[] = [];
 
   let nthPrime = 1;
 
   while (n > 1) {
-    const currPrime = getNthPrime(nthPrime);
+    const currPrime = getNthPrimeFunc(nthPrime);
 
     if (currPrime > n) {
       throw new Error(
